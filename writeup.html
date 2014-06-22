@@ -183,13 +183,22 @@ g + labs(title = &quot;Accuracy based on randomly selected predictors&quot;,
 ## Detection Rate          0.283    0.192    0.173    0.163    0.183
 ## Detection Prevalence    0.284    0.193    0.175    0.165    0.183
 ## Balanced Accuracy       0.998    0.997    0.994    0.995    0.997</code></pre>
-<p>In our model in sample error was 0 where parameter mtry = 19 and sample error would be [%]</p>
+<p>Out of sample accuracy is</p>
+<pre class="r"><code>sum(predictions==test_set$classe)/nrow(test_set)</code></pre>
+<pre><code>## [1] 0.994</code></pre>
+<p>and converting in percentage</p>
+<pre class="r"><code>(sum(predictions==test_set$classe)/nrow(test_set)) * 100</code></pre>
+<pre><code>## [1] 99.4</code></pre>
+<p>In our model in sample Accuracy was 100% so in sample error was 0% where parameter mtry = 19. Out of sample error would be</p>
 <pre class="r"><code>1 - (sum(predictions==test_set$classe)/nrow(test_set))</code></pre>
 <pre><code>## [1] 0.006014</code></pre>
+<p>and converting in percentage [%]</p>
+<pre class="r"><code>(1 - (sum(predictions==test_set$classe)/nrow(test_set))) * 100</code></pre>
+<pre><code>## [1] 0.6014</code></pre>
 </div>
 <div id="conclusion" class="section level2">
 <h2>5. Conclusion</h2>
-<p>We apply prediction model based on Random forest algorithm. An algorithm performance was outstandinglly low.</p>
+<p>We apply prediction model based on Random forest algorithm. An algorithm performance was outstandinglly high.</p>
 </div>
 <div id="references" class="section level2">
 <h2>6. References</h2>

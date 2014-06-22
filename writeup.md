@@ -105,14 +105,14 @@ model
 ## No pre-processing
 ## Resampling: Cross-Validated (7 fold) 
 ## 
-## Summary of sample sizes: 8411, 8409, 8413, 8409, 8410, 8409, ... 
+## Summary of sample sizes: 8410, 8409, 8410, 8412, 8411, 8409, ... 
 ## 
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
-##   2     1         1      0.004        0.005   
-##   20    1         1      0.004        0.005   
-##   40    1         1      0.005        0.006   
+##   2     1         1      0.003        0.004   
+##   20    1         1      0.002        0.003   
+##   40    1         1      0.001        0.002   
 ## 
 ## Accuracy was used to select the optimal model using  the largest value.
 ## The final value used for the model was mtry = 19.
@@ -147,48 +147,74 @@ confusionMatrix(predictions, test_set$classe)
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 2781   25    0    0    0
-##          B    7 1859   19    4    1
-##          C    0   12 1678   23    3
-##          D    2    2   14 1574    3
-##          E    0    0    0    7 1796
+##          A 2774   22    2    0    2
+##          B    8 1866   25    1    5
+##          C    3    9 1671   17    4
+##          D    5    0   13 1586   13
+##          E    0    1    0    4 1779
 ## 
 ## Overall Statistics
-##                                        
-##                Accuracy : 0.988        
-##                  95% CI : (0.985, 0.99)
-##     No Information Rate : 0.284        
-##     P-Value [Acc > NIR] : <2e-16       
-##                                        
-##                   Kappa : 0.984        
-##  Mcnemar's Test P-Value : NA           
+##                                         
+##                Accuracy : 0.986         
+##                  95% CI : (0.984, 0.989)
+##     No Information Rate : 0.284         
+##     P-Value [Acc > NIR] : < 2e-16       
+##                                         
+##                   Kappa : 0.983         
+##  Mcnemar's Test P-Value : 0.000169      
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity             0.997    0.979    0.981    0.979    0.996
-## Specificity             0.996    0.996    0.995    0.997    0.999
-## Pos Pred Value          0.991    0.984    0.978    0.987    0.996
-## Neg Pred Value          0.999    0.995    0.996    0.996    0.999
+## Sensitivity             0.994    0.983    0.977    0.986    0.987
+## Specificity             0.996    0.995    0.996    0.996    0.999
+## Pos Pred Value          0.991    0.980    0.981    0.981    0.997
+## Neg Pred Value          0.998    0.996    0.995    0.997    0.997
 ## Prevalence              0.284    0.193    0.174    0.164    0.184
-## Detection Rate          0.283    0.190    0.171    0.160    0.183
-## Detection Prevalence    0.286    0.193    0.175    0.163    0.184
-## Balanced Accuracy       0.997    0.988    0.988    0.988    0.998
+## Detection Rate          0.283    0.190    0.170    0.162    0.181
+## Detection Prevalence    0.285    0.194    0.174    0.165    0.182
+## Balanced Accuracy       0.995    0.989    0.986    0.991    0.993
+```
+Out of sample accuracy is
+
+```r
+sum(predictions==test_set$classe)/nrow(test_set)
 ```
 
-In our model in sample error was 0 where parameter mtry = 19 and sample error would be [%]
+```
+## [1] 0.9863
+```
+and converting in percentage
+
+```r
+(sum(predictions==test_set$classe)/nrow(test_set)) * 100
+```
+
+```
+## [1] 98.63
+```
+
+In our model in sample Accuracy was 100% so in sample error was 0%  where parameter mtry = 19. Out of sample error would be
 
 ```r
 1 - (sum(predictions==test_set$classe)/nrow(test_set))
 ```
 
 ```
-## [1] 0.01244
+## [1] 0.01366
+```
+and converting in percentage [%]
+
+```r
+(1 - (sum(predictions==test_set$classe)/nrow(test_set))) * 100
 ```
 
+```
+## [1] 1.366
+```
 
 ## 5. Conclusion
-We apply prediction model based on Random forest algorithm. An algorithm performance was outstandinglly low.
+We apply prediction model based on Random forest algorithm. An algorithm performance was outstandinglly high.
 
 ## 6. References
 

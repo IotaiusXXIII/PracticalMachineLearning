@@ -50,7 +50,7 @@ important_variables <- grep("^pitch|^roll|^yaw|^classe|^gyros|^accel|^magnet ", 
 
 Next was made a sample of data. This is cruical for analysis because data could be in order and then prediction model would have very high error. With sampling we ensure that in any sets there wont be only one class in predict variable. We do this with function createDataPartition() which could be found in caret package. We choose to split it on 50-50.
 
-```{r}
+```{r, cache=TRUE}
 samples <- createDataPartition(y = training_data$classe, p = 0.5, list = F)
 ```
 
@@ -102,15 +102,26 @@ Then we calculated confusion matrix
 ```{r}
 confusionMatrix(predictions, test_set$classe)
 ```
+Out of sample accuracy is
+```{r}
+sum(predictions==test_set$classe)/nrow(test_set)
+```
+and converting in percentage
+```{r}
+(sum(predictions==test_set$classe)/nrow(test_set)) * 100
+```
 
-In our model in sample error was 0 where parameter mtry = 19 and sample error would be [%]
+In our model in sample Accuracy was 100% so in sample error was 0%  where parameter mtry = 19. Out of sample error would be
 ```{r}
 1 - (sum(predictions==test_set$classe)/nrow(test_set))
 ```
-
+and converting in percentage [%]
+```{r}
+(1 - (sum(predictions==test_set$classe)/nrow(test_set))) * 100
+```
 
 ## 5. Conclusion
-We apply prediction model based on Random forest algorithm. An algorithm performance was outstandinglly low.
+We apply prediction model based on Random forest algorithm. An algorithm performance was outstandinglly high.
 
 ## 6. References
 

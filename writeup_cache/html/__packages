@@ -1,0 +1,15 @@
+base
+caret
+e1071
+ggplot2
+knitr
+lattice
+MASS
+modeltools
+nnet
+party
+randomForest
+rpart
+sandwich
+strucchange
+zoo

@@ -1,0 +1,117 @@
+---
+title: "Predicting dumbell position"
+output: html_document
+---
+```{r, results='hide', message=FALSE, echo=FALSE}
+library(knitr)
+library(rpart)
+library(MASS)
+library(party)
+library(randomForest)
+library(nnet)
+library(caret)
+library(ggplot2)
+```
+
+
+```{r, echo=FALSE, cache=TRUE}
+opts_knit$set(root.dir = "C:\\Users\\iNejc\\Desktop\\predavanja_ostala\\coursera\\Data_science_specialization_John_Hopkins_University\\8Practical_machine_learning\\project_1\\writeup")
+```
+
+## 1. Introduction
+
+One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. 
+
+This was classification with multiple classes problem. Our task was construct a prediction model which will predict as correct as possible the right class. There were 5 classes A, B, C, D and E. We build a model which has an outstanding performance.
+
+## 2. Data
+
+Six young health participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes. Participants were supervised by an experienced weight lifter to make sure the execution complied to the manner they were supposed to simulate. The exercises were performed by six male participants aged between 20-28 years, with little weight lifting experience. We made sure that all participants could easily simulate the mistakes in a safe and controlled manner by using a relatively light dumbbell (1.25kg).
+
+
+The data for this project come from this source [1]. We read data provided for this assignment. 
+
+```{r, cache=TRUE}
+training_data <- read.csv("pml-training.csv")
+test_data <- read.csv("pml-testing.csv") 
+nrow(training_data)
+ncol(training_data)
+nrow(test_data)
+```
+Test data in this case has only 20 observations because they are intended for submitting twenty predictions which are second part of this assignment.
+
+## 3. Reading and preprocessing data
+
+Firstly we look at the data and see variables in it, their class, if there are any missing values, etc. Then we try to find appropriate variables for prediction model. After careful considerations we came to the solution.
+
+```{r}
+important_variables <- grep("^pitch|^roll|^yaw|^classe|^gyros|^accel|^magnet ", colnames(training_data))
+```
+
+Next was made a sample of data. This is cruical for analysis because data could be in order and then prediction model would have very high error. With sampling we ensure that in any sets there wont be only one class in predict variable. We do this with function createDataPartition() which could be found in caret package. We choose to split it on 50-50.
+
+```{r}
+samples <- createDataPartition(y = training_data$classe, p = 0.5, list = F)
+```
+
+Next we split the data on training and test set. As we said above the test data are to small not appropriate for machine learning due to their length so we will split the variable training_data. 
+
+```{r}
+training_set <- training_data[samples,important_variables]
+test_set <- training_data[-samples,important_variables]
+```
+
+Now we have both, appropriate training and test data. Now it is time to start building a prediction model. 
+
+## 4. Prediction model
+
+We have build few prediction models with different methods. Names of algorithms and their designations are in table below.
+
+| Name of algorithm | Method |
+| :---------------: | :----: |
+| k-Nearest Neighbor | knn |
+| Conditional Inference Tree | ctree |
+| Conditional Inference Tree | ctree2 |
+| Random Forest | rf |
+| CART | rpart |
+
+The best performance with default parameters has a Random forest algorithm so we tune it up. We apply cross validation method K-fold. Parameters we used were; number of folds was 7 and number of repeats was 5. 
+
+```{r, cache=TRUE}
+model <- train(classe ~ ., data = training_set, method = "rf",
+               trControl = trainControl("cv", number = 7, repeats = 5))
+model
+```
+
+We plot how the model was built and its best performance depends on parameter mtry. The optimal parameter has 19 variables included.
+```{r}
+g <- ggplot(model)
+g + labs(title = "Accuracy based on randomly selected predictors", 
+         x = "Number of randomly selected predictors", y = "Accuracy")
+
+```
+
+
+Next we apply our model on test set.
+```{r, cache=TRUE}
+predictions <- predict(model, test_set, type  ="raw")
+```
+
+Then we calculated confusion matrix
+
+```{r}
+confusionMatrix(predictions, test_set$classe)
+```
+
+In our model in sample error was 0 where parameter mtry = 19 and sample error would be [%]
+```{r}
+1 - (sum(predictions==test_set$classe)/nrow(test_set))
+```
+
+
+## 5. Conclusion
+We apply prediction model based on Random forest algorithm. An algorithm performance was outstandinglly low.
+
+## 6. References
+
+[1] http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises 
